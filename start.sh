@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo "Starting..."
-ng serve --prod --port 80
+PORT=80 node server.js
