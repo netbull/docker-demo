@@ -1,4 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { CreateTaskComponent } from './create-task/create-task.component';
 
 interface Task {
   id: number;
@@ -15,6 +17,8 @@ export class AppComponent implements OnInit {
   @ViewChild('checklist') checklist;
 
   tasksList: Task[];
+
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit() {
     this.tasksList = [{
@@ -47,6 +51,23 @@ export class AppComponent implements OnInit {
   selectionChange({ option }) {
     const { value, selected } = option;
     this.tasksList.find(task => task.id === value).done = selected;
+  }
+
+  createTask() {
+
+    const dialogRef = this.dialog.open(CreateTaskComponent, {
+      width: '30rem',
+    });
+
+    dialogRef.afterClosed().subscribe(({ title }) => {
+      if (typeof title !== 'undefined') {
+        this.tasksList.push({
+          id: this.tasksList.length + 1,
+          title,
+          done: false
+        });
+      }
+    });
   }
 
   get completion() {
