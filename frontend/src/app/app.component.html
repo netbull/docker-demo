@@ -8,15 +8,15 @@
     </button>
   </mat-card-header>
   <mat-card-content>
-    <mat-selection-list #checklist>
-      <mat-list-option *ngFor="let task of tasks">
+    <mat-selection-list #checklist (selectionChange)="selectionChange($event)">
+      <mat-list-option *ngFor="let task of tasks" [selected]="task.done" [value]="task.id">
         {{task.title}}
       </mat-list-option>
     </mat-selection-list>
   </mat-card-content>
   <mat-card-footer>
     <div class="completion">
-      <strong>{{this.checklist.selectedOptions.selected.length}}</strong> of <strong>{{this.tasks.length}}</strong> completed
+      <strong>{{this.tasksDone}}</strong> of <strong>{{this.tasksList.length}}</strong> completed
     </div>
     <mat-progress-bar mode="determinate" [value]="completion"></mat-progress-bar>
   </mat-card-footer>
