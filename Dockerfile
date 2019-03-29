@@ -14,6 +14,6 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 
 RUN rm -f /var/cache/apk/*
 
-COPY ./src/ /usr/local/apache2/htdocs/
+COPY ./src/* /usr/local/apache2/htdocs/
 
 EXPOSE 80
