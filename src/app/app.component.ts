@@ -16,12 +16,12 @@ interface Task {
 export class AppComponent implements OnInit {
   @ViewChild('checklist') checklist;
 
-  tasksList: Task[];
+  tasks: Task[];
 
   constructor(public dialog: MatDialog) {}
 
   ngOnInit() {
-    this.tasksList = [{
+    this.tasks = [{
       id: 1,
       title: 'Create angular app',
       done: false
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
 
   selectionChange({ option }) {
     const { value, selected } = option;
-    this.tasksList.find(task => task.id === value).done = selected;
+    this.tasks.find(task => task.id === value).done = selected;
   }
 
   createTask() {
@@ -61,8 +61,8 @@ export class AppComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(({ title }) => {
       if (typeof title !== 'undefined') {
-        this.tasksList.push({
-          id: this.tasksList.length + 1,
+        this.tasks.push({
+          id: this.tasks.length + 1,
           title,
           done: false
         });
@@ -71,15 +71,11 @@ export class AppComponent implements OnInit {
   }
 
   get completion() {
-    return (this.tasksDone / this.tasksList.length) * 100;
-  }
-
-  get tasks(): Task[] {
-    return this.tasksList.concat().sort(this.sortBy('done'));
+    return (this.tasksDone / this.tasks.length) * 100;
   }
 
   get tasksDone() {
-    return this.tasksList.filter(({ done }) => !!done).length;
+    return this.tasks.filter(({ done }) => !!done).length;
   }
 
   private sortBy(key) {
