@@ -1,6 +1,5 @@
 FROM johnpapa/angular-cli
 
-
 WORKDIR /app
 
 COPY . /app
