@@ -1,12 +1,7 @@
+import { TasksService } from './tasks.service';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { CreateTaskComponent } from './create-task/create-task.component';
-
-interface Task {
-  id: number;
-  title: string;
-  done: boolean;
-}
 
 @Component({
   selector: 'app-root',
@@ -16,36 +11,18 @@ interface Task {
 export class AppComponent implements OnInit {
   @ViewChild('checklist') checklist;
 
-  tasks: Task[];
+  tasks: any[] = [];
+  subscription: any;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    private tasksService: TasksService
+  ) {}
 
   ngOnInit() {
-    this.tasks = [{
-      id: 1,
-      title: 'Create angular app',
-      done: false
-    }, {
-      id: 2,
-      title: 'Add angular material',
-      done: false
-    }, {
-      id: 3,
-      title: 'Update tslint rules',
-      done: false
-    }, {
-      id: 4,
-      title: 'Setup styleguide',
-      done: false
-    }, {
-      id: 5,
-      title: 'Integrate firebase authentication',
-      done: false
-    }, {
-      id: 6,
-      title: 'Create todo list markup',
-      done: false
-    }];
+    this.subscription = this.tasksService.list().subscribe(tasks => {
+      console.log(tasks);
+    });
   }
 
   selectionChange({ option }) {
