@@ -1,10 +1,14 @@
 ## To run in `development` mode
 
-### Prebuild image
+### Build
 ```
-$ docker build -f Dockerfile-dev ./ -t docker-demo-dev
+$ docker-compose build
 ```
-### Then run
+### Run
 ```
-$ docker run --rm -it --mount type=bind,source="${pwd}"/src,target=/app/src -p 0.0.0.0:4200:4200 docker-demo-dev
+$ docker-compose up -d
+```
+### Watch logs
+```
+$ docker logs docker-demo_base_1 -f
 ```
