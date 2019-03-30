@@ -1,14 +1,16 @@
 import { TasksService } from './tasks.service';
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { CreateTaskComponent } from './create-task/create-task.component';
+import { pipe } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('checklist') checklist;
 
   tasks: any[] = [];
@@ -20,29 +22,36 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.tasksService.list().subscribe(tasks => {
-      console.log(tasks);
+    this.subscription = this.tasksService.list().subscribe((tasks: any[]) => {
+      this.tasks = tasks;
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   selectionChange({ option }) {
     const { value, selected } = option;
-    this.tasks.find(task => task.id === value).done = selected;
+    const { title } = this.tasks.find(task => task.id === value);
+    this.tasksService
+      .update(value, { title, done: selected })
+      .pipe(first())
+      .subscribe(() => console.log('>> updated status'));
   }
 
   createTask() {
-
     const dialogRef = this.dialog.open(CreateTaskComponent, {
       width: '30rem',
     });
 
-    dialogRef.afterClosed().subscribe(({ title }) => {
+    dialogRef.afterClosed().subscribe(data => {
+      const { title } = data;
       if (typeof title !== 'undefined') {
-        this.tasks.push({
-          id: this.tasks.length + 1,
-          title,
-          done: false
-        });
+        this.tasksService
+          .create({ title })
+          .pipe(first())
+          .subscribe(() => console.log('>> created task'));
       }
     });
   }
@@ -53,9 +62,5 @@ export class AppComponent implements OnInit {
 
   get tasksDone() {
     return this.tasks.filter(({ done }) => !!done).length;
-  }
-
-  private sortBy(key) {
-    return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
   }
 }
