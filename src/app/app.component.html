@@ -12,9 +12,6 @@
       <mat-checkbox [checked]="task.done" [value]="task.id" (change)="selectionChange(task)">
         {{task.title}}
       </mat-checkbox>
-      <button mat-icon-button color="warn" mat-list-icon (click)="delete(task.id)">
-        <mat-icon>delete</mat-icon>
-      </button>
     </div>
   </mat-card-content>
   <mat-card-footer>
