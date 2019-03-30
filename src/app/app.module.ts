@@ -11,7 +11,8 @@ import {
   MatProgressBarModule,
   MatDialogModule,
   MatFormFieldModule,
-  MatInputModule
+  MatInputModule,
+  MatCheckboxModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -35,7 +36,8 @@ import { CreateTaskComponent } from './create-task/create-task.component';
     MatProgressBarModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatCheckboxModule
   ],
   entryComponents: [
     CreateTaskComponent

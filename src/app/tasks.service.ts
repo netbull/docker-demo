@@ -14,18 +14,17 @@ export class TasksService {
   }
 
   create({ title }) {
-    const form = new FormData();
-    form.append('title', title);
-    return this.http.post(`${this.url}/task`, form, { headers: this.headers });
+    return this.http.post(`${this.url}/task`, `title=${title}`, { headers: this.headers });
   }
 
   update(id, { title, done }) {
-    const form = new FormData();
-    form.append('title', title);
-    form.append('done', done);
-    return this.http.patch(`${this.url}/task/${id}`, form, {
+    return this.http.post(`${this.url}/task/${id}`, `title=${title}&done=${done}`, {
       headers: this.headers
     });
+  }
+
+  delete(id) {
+    return this.http.post(`${this.url}/task/delete/${id}`, null, { headers: this.headers });
   }
 
 }

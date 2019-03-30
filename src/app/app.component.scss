@@ -4,7 +4,7 @@
   justify-content: center;
   padding:2rem;
   width:100vw;
-  height:100vh;
+  min-height:100vh;
   background:#e5e5e9;
   box-sizing: border-box;
   .mat-card {
@@ -23,5 +23,11 @@
         padding:2rem;
       }
     }
+  }
+  .flex {
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }

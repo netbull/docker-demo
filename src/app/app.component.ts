@@ -1,58 +1,73 @@
 import { TasksService } from './tasks.service';
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { CreateTaskComponent } from './create-task/create-task.component';
 import { pipe } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"]
 })
-export class AppComponent implements OnInit, OnDestroy {
-  @ViewChild('checklist') checklist;
+export class AppComponent implements OnInit {
+  @ViewChild("checklist") checklist;
 
   tasks: any[] = [];
   subscription: any;
 
-  constructor(
-    public dialog: MatDialog,
-    private tasksService: TasksService
-  ) {}
+  constructor(public dialog: MatDialog, private tasksService: TasksService) {}
 
   ngOnInit() {
-    this.subscription = this.tasksService.list().subscribe((tasks: any[]) => {
-      this.tasks = tasks;
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  selectionChange({ option }) {
-    const { value, selected } = option;
-    const { title } = this.tasks.find(task => task.id === value);
-    this.tasksService
-      .update(value, { title, done: selected })
+    this.subscription = this.tasksService
+      .list()
       .pipe(first())
-      .subscribe(() => console.log('>> updated status'));
+      .subscribe(this.setTasks());
+  }
+
+  setTasks() {
+    return tasks => {
+      this.tasks = tasks;
+    };
+  }
+
+  selectionChange(task) {
+    const { id, done, title } = task;
+    this.tasksService
+      .update(id, { title, done: done ? 0 : 1 })
+      .pipe(
+        first(),
+        switchMap(() => this.tasksService.list())
+      )
+      .subscribe(this.setTasks());
+  }
+
+  delete(id) {
+    this.tasksService
+      .delete(id)
+      .pipe(
+        first(),
+        switchMap(() => this.tasksService.list())
+      )
+      .subscribe(this.setTasks());
   }
 
   createTask() {
     const dialogRef = this.dialog.open(CreateTaskComponent, {
-      width: '30rem',
+      width: "30rem"
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (typeof data !== 'undefined') {
+      if (typeof data !== "undefined") {
         const { title } = data;
-        if (typeof title !== 'undefined') {
+        if (typeof title !== "undefined") {
           this.tasksService
             .create({ title })
-            .pipe(first())
-            .subscribe(() => console.log('>> created task'));
+            .pipe(
+              first(),
+              switchMap(() => this.tasksService.list())
+            )
+            .subscribe(this.setTasks());
         }
       }
     });
