@@ -46,12 +46,14 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      const { title } = data;
-      if (typeof title !== 'undefined') {
-        this.tasksService
-          .create({ title })
-          .pipe(first())
-          .subscribe(() => console.log('>> created task'));
+      if (typeof data !== 'undefined') {
+        const { title } = data;
+        if (typeof title !== 'undefined') {
+          this.tasksService
+            .create({ title })
+            .pipe(first())
+            .subscribe(() => console.log('>> created task'));
+        }
       }
     });
   }
